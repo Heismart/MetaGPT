@@ -6,12 +6,31 @@ RUN apt update &&\
     apt install -y libgomp1 git chromium fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf libxss1 --no-install-recommends &&\
     apt clean && rm -rf /var/lib/apt/lists/*
 
+<<<<<<< HEAD
 # Install Mermaid CLI globally
 ENV CHROME_BIN="/usr/bin/chromium" \
     puppeteer_config="/app/metagpt/config/puppeteer-config.json"\
     PUPPETEER_SKIP_CHROMIUM_DOWNLOAD="true"
 RUN npm install -g @mermaid-js/mermaid-cli &&\
     npm cache clean --force
+=======
+# Install Debian software needed by MetaGPT
+RUN sed -i 's/deb.debian.org/mirrors.aliyun.com/g' /etc/apt/sources.list &&\
+    apt update &&\
+    apt install -y git curl wget build-essential gcc clang g++ make &&\
+    curl -sL https://deb.nodesource.com/setup_19.x | bash - &&\
+    apt install -y nodejs &&\
+    apt-get clean
+
+# Set the working directory to /app
+WORKDIR /app
+
+# Install Mermaid CLI globally and clone the MetaGPT repository
+RUN npm config set registry https://registry.npm.taobao.org &&\
+    npm install -g @mermaid-js/mermaid-cli &&\
+    npm cache clean --force &&\
+    git clone https://github.com/geekan/metagpt
+>>>>>>> e2c9bf19 (Ok)
 
 # Install Python dependencies and install MetaGPT
 COPY . /app/metagpt
